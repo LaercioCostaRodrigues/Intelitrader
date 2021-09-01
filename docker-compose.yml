@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  personregistry:
+    image: ${DOCKER_REGISTRY-}personregistry
+    build:
+      context: .
+      dockerfile: PersonRegistry/Dockerfile
+    ports:
+        - "8000:80"
+    depends_on:
+        - sql_server
+
+  sql_server:
+    image: "mcr.microsoft.com/mssql/server:2017-latest-ubuntu"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "the_password123"
+      MSSQL_PID: Express
+    ports:
+        - "1433:1433"
