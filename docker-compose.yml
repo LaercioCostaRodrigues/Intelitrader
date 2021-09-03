@@ -12,10 +12,17 @@ services:
         - sql_server
 
   sql_server:
-    image: "mcr.microsoft.com/mssql/server:2017-latest-ubuntu"
+    build:
+      dockerfile: mssql_database/Dockerfile
     environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "the_password123"
-      MSSQL_PID: Express
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=the_password123
+      - MSSQL_PID=Express
     ports:
         - "1433:1433"
+
+    volumes:
+      - sql_server:/var/opt/mssql
+
+volumes:
+    sql_server:

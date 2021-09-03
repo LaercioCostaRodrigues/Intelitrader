@@ -28,7 +28,6 @@ namespace PersonRegistry
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -37,6 +36,7 @@ namespace PersonRegistry
 
             services.AddDbContext<PersonRegistryContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("PersonRegistryContext")));
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
