@@ -13,6 +13,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PersonRegistry.Data;
+using PersonRegistry.Interfaces;
+using PersonRegistry.Repositories;
 
 namespace PersonRegistry
 {
@@ -36,6 +38,7 @@ namespace PersonRegistry
 
             services.AddDbContext<PersonRegistryContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("PersonRegistryContext")));
+            services.AddScoped<IUserRepository, UserRepository>();
             
         }
 

@@ -7,7 +7,7 @@ using PersonRegistry.Models;
 
 namespace PersonRegistry.Data
 {
-    public class PersonRegistryContext : DbContext
+    public class PersonRegistryContext : DbContext   //, IPersonRegistryContext
     {
         public PersonRegistryContext (DbContextOptions<PersonRegistryContext> options)
             : base(options)

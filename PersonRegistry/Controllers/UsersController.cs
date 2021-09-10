@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PersonRegistry.Data;
 using PersonRegistry.Models;
+using PersonRegistry.Interfaces;
 using Serilog;
+
 
 namespace PersonRegistry.Controllers
 {
@@ -15,11 +17,14 @@ namespace PersonRegistry.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly PersonRegistryContext _context;
+//        private readonly PersonRegistryContext _context;
+        private readonly IUserRepository _userRepository;
 
-        public UsersController(PersonRegistryContext context)
+        //public UsersController(PersonRegistryContext context, IUserRepository userRepository)
+        public UsersController(IUserRepository userRepository)
         {
-            _context = context;
+            //_context = context;
+            _userRepository = userRepository;
         }
 
         // GET: api/Users
@@ -27,14 +32,16 @@ namespace PersonRegistry.Controllers
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
             Log.Information("[HttpGet] All");
-            return await _context.User.ToListAsync();
+            //return await _userRepository.User.ToListAsync();
+            return await _userRepository.GetAllAsync();
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(string id)
         {
-            var user = await _context.User.FindAsync(id);
+            //var user = await _context.User.FindAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -46,6 +53,8 @@ namespace PersonRegistry.Controllers
             return user;
         }
 
+
+/*
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -80,7 +89,48 @@ namespace PersonRegistry.Controllers
 
             return NoContent();
         }
+*/
 
+/*
+        // PUT: api/Users/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public IActionResult PutUser(string id, User user)
+        {
+            if (id != user.Id)
+            {
+                Log.Information($"[HttpPut({id})] BadRequest");
+                return BadRequest();
+            }
+
+            //_context.Entry(user).State = EntityState.Modified;
+            return _userRepository.Put(id, user);
+
+            try
+            {
+                Log.Information($"[HttpPut({id})]");
+                //await _context.SaveChangesAsync();
+                await _userRepository.PutSaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(id))
+                {
+                    Log.Information($"[HttpPut({id})] NotFound");
+                    return NotFound();
+                }
+                else
+                {
+                    Log.Information($"[HttpPut({id})] throw");
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+*/
+
+/*
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -135,6 +185,7 @@ namespace PersonRegistry.Controllers
             return _context.User.Any(e => e.Id == id);
         }
         
+*/        
         private string IdGenerator()
         {
             Random random = new Random();
