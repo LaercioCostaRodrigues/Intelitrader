@@ -1,4 +1,3 @@
-docker build -t personregistry .
-docker compose up -d
-
+## docker build -t personregistry .
+## docker compose up -d
 

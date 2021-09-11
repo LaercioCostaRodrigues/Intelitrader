@@ -6,10 +6,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-
 using Microsoft.AspNetCore.Http;
-
-
 using System;
 using System.Linq;
 
@@ -24,69 +21,40 @@ namespace PersonRegistry.Repositories
             _context = context;
         }
 
-        public async Task<List<User>> GetAllAsync()
+        public List<User> GetAll()
         {
-            return await _context.User.ToListAsync();
+            return _context.User.ToList();
         }
 
-        public async Task<User> GetByIdAsync(string id)
+        public void State(User user)
         {
-            return await _context.User.FindAsync(id);
+            _context.Entry(user).State = EntityState.Modified;
         }
         
-
-/*
-
-
-        public IActionResult Put(string id, User user)
-        //public void Put(User user)
+        public void Add(User user)
         {
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                Log.Information($"[HttpPut({id})]");
-                _context.SaveChangesAsync();
-                //_userRepository.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    Log.Information($"[HttpPut({id})] NotFound");
-                    return NotFound();
-                }
-                else
-                {
-                    Log.Information($"[HttpPut({id})] throw");
-                    throw;
-                }
-            }
-
-            return NoContent();
+            _context.User.Add(user);
         }
 
-*/
-
-/*
-       //public async Task<IActionResult> Put(string id, User user)
-        public void Put(User user)
+        public void SaveChanges()
         {
-            _context.Entry(user).State = EntityState.Modified;
+           _context.SaveChanges();
         }
 
-        public async Task<IActionResult> PutSaveChanges()
-        //public void PutSaveChanges()
+        public User Find(string id)
         {
-           _context.SaveChangesAsync();
+            return _context.User.Find(id);
         }
-*/
 
-
-
-        private bool UserExists(string id)
+        public void Remove(User user)
+        {
+            _context.User.Remove(user);
+        }
+        
+        public bool UserExists(string id)
         {
             return _context.User.Any(e => e.Id == id);
         }
+
     }
 }

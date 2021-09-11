@@ -17,31 +17,26 @@ namespace PersonRegistry.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-//        private readonly PersonRegistryContext _context;
         private readonly IUserRepository _userRepository;
 
-        //public UsersController(PersonRegistryContext context, IUserRepository userRepository)
         public UsersController(IUserRepository userRepository)
         {
-            //_context = context;
             _userRepository = userRepository;
         }
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public ActionResult<IEnumerable<User>> GetUsers()
         {
             Log.Information("[HttpGet] All");
-            //return await _userRepository.User.ToListAsync();
-            return await _userRepository.GetAllAsync();
+            return _userRepository.GetAll();
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(string id)
+        public ActionResult<User> GetUser(string id)
         {
-            //var user = await _context.User.FindAsync(id);
-            var user = await _userRepository.GetByIdAsync(id);
+            var user =  _userRepository.Find(id);
 
             if (user == null)
             {
@@ -53,45 +48,6 @@ namespace PersonRegistry.Controllers
             return user;
         }
 
-
-/*
-        // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(string id, User user)
-        {
-            if (id != user.Id)
-            {
-                Log.Information($"[HttpPut({id})] BadRequest");
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                Log.Information($"[HttpPut({id})]");
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    Log.Information($"[HttpPut({id})] NotFound");
-                    return NotFound();
-                }
-                else
-                {
-                    Log.Information($"[HttpPut({id})] throw");
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-*/
-
-/*
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -103,14 +59,12 @@ namespace PersonRegistry.Controllers
                 return BadRequest();
             }
 
-            //_context.Entry(user).State = EntityState.Modified;
-            return _userRepository.Put(id, user);
+            _userRepository.State(user);
 
             try
             {
                 Log.Information($"[HttpPut({id})]");
-                //await _context.SaveChangesAsync();
-                await _userRepository.PutSaveChanges();
+                _userRepository.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -128,22 +82,19 @@ namespace PersonRegistry.Controllers
 
             return NoContent();
         }
-*/
 
-/*
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public ActionResult<User> PostUser(User user)
         {
-            //[Bind("firstName", "surname", "age")]
-            _context.User.Add(user);
+            _userRepository.Add(user);
             try
             {
                 user.Id = IdGenerator();
                 user.CreationDate = DateTime.Now;
                 Log.Information($"[HttpPost({user.Id})]");
-                await _context.SaveChangesAsync();
+                _userRepository.SaveChanges();
             }
             catch (DbUpdateException)
             {
@@ -164,9 +115,9 @@ namespace PersonRegistry.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(string id)
+        public IActionResult DeleteUser(string id)
         {
-            var user = await _context.User.FindAsync(id);
+            var user =  _userRepository.Find(id);
             if (user == null)
             {
                 Log.Information($"[HttpDelete({id})] NotFound");
@@ -174,18 +125,17 @@ namespace PersonRegistry.Controllers
             }
 
             Log.Information($"[HttpDelete({id})]");
-            _context.User.Remove(user);
-            await _context.SaveChangesAsync();
+            _userRepository.Remove(user);
+            _userRepository.SaveChanges();
 
             return NoContent();
         }
 
         private bool UserExists(string id)
         {
-            return _context.User.Any(e => e.Id == id);
+            return _userRepository.UserExists(id);
         }
-        
-*/        
+
         private string IdGenerator()
         {
             Random random = new Random();
