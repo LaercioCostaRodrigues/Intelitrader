@@ -68,7 +68,7 @@ namespace PersonRegistry.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!_userRepository.UserExists(id))
                 {
                     Log.Information($"[HttpPut({id})] NotFound");
                     return NotFound();
@@ -91,14 +91,14 @@ namespace PersonRegistry.Controllers
             _userRepository.Add(user);
             try
             {
-                user.Id = IdGenerator();
+                user.Id = _userRepository.IdGenerator();
                 user.CreationDate = DateTime.Now;
                 Log.Information($"[HttpPost({user.Id})]");
                 _userRepository.SaveChanges();
             }
             catch (DbUpdateException)
             {
-                if (UserExists(user.Id))
+                if (_userRepository.UserExists(user.Id))
                 {
                     Log.Information($"[HttpPost({user.Id})] Conflict");
                     return Conflict();
@@ -131,23 +131,5 @@ namespace PersonRegistry.Controllers
             return NoContent();
         }
 
-        private bool UserExists(string id)
-        {
-            return _userRepository.UserExists(id);
-        }
-
-        private string IdGenerator()
-        {
-            Random random = new Random();
-            string id = string.Empty;
-
-            id += (char)random.Next(97, 123);
-            id += random.Next(0, 10);
-            id += (char)random.Next(97, 123);
-            id += random.Next(0, 10);
-            id += (char)random.Next(97, 123);
-
-            return id + '-' + id + '-' + id + '-' + id + '-' + id;
-        }
     }
 }

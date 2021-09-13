@@ -16,5 +16,6 @@ namespace PersonRegistry.Interfaces
         void SaveChanges();
         User Find(string id);
         void Remove(User user);
+        string IdGenerator();
     }
 }

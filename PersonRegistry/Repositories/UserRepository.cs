@@ -56,5 +56,19 @@ namespace PersonRegistry.Repositories
             return _context.User.Any(e => e.Id == id);
         }
 
+        public string IdGenerator()
+        {
+            Random random = new Random();
+            string id = string.Empty;
+
+            id += (char)random.Next(97, 123);
+            id += random.Next(0, 10);
+            id += (char)random.Next(97, 123);
+            id += random.Next(0, 10);
+            id += (char)random.Next(97, 123);
+
+            return id + '-' + id + '-' + id + '-' + id + '-' + id;
+        }
+
     }
 }
