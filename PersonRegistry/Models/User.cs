@@ -1,8 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PersonRegistry.Models
 {
@@ -26,7 +23,6 @@ namespace PersonRegistry.Models
         public int Age { get; set; }
 
         [DataType(DataType.Date)]
-        //[DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)] 
         [DisplayFormat(DataFormatString = "s")]
         public DateTime CreationDate { get; set; }
     }

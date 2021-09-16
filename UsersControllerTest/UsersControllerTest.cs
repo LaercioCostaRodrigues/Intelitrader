@@ -35,9 +35,6 @@ namespace UsersControllerTest
             string id = "b4f5a-b4f5a-b4f5a-b4f5a-b4f5a";
             var fakeUser = A.Fake<User>();
             fakeUser.Id = id;
-            fakeUser.FirstName = "Anders";
-            fakeUser.Surname = "Hejlsberg";
-            fakeUser.Age = 61;
 
             var fakeRepository = A.Fake<IUserRepository>();
             var UserController = new UsersController(fakeRepository);

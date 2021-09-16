@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PersonRegistry.Data;
-using PersonRegistry.Models;
 using PersonRegistry.Interfaces;
+using PersonRegistry.Models;
 using Serilog;
+using System;
+using System.Collections.Generic;
 
 
 namespace PersonRegistry.Controllers
@@ -51,13 +47,26 @@ namespace PersonRegistry.Controllers
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public IActionResult PutUser(string id, User user)
+        public IActionResult PutUser(string id, UserBind userBind)
         {
+            var user = _userRepository.Find(id);
+
+            if (user == null)
+            {
+                Log.Information($"[HttpPut({id})] NotFound");
+                return NotFound();
+            }
+            
             if (id != user.Id)
             {
                 Log.Information($"[HttpPut({id})] BadRequest");
                 return BadRequest();
             }
+
+            user.FirstName = userBind.FirstName;
+            user.Surname = userBind.Surname;
+            user.Age = userBind.Age;
+            user.Id = id;
 
             _userRepository.State(user);
 
@@ -86,14 +95,19 @@ namespace PersonRegistry.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<User> PostUser(User user)
+        public ActionResult<User> PostUser(UserBind userBind)
         {
-            _userRepository.Add(user);
+            User user = new();
+            user.FirstName = userBind.FirstName;
+            user.Surname = userBind.Surname;
+            user.Age = userBind.Age;
+            user.Id = _userRepository.IdGenerator();
+            user.CreationDate = DateTime.Now;
+
             try
             {
-                user.Id = _userRepository.IdGenerator();
-                user.CreationDate = DateTime.Now;
                 Log.Information($"[HttpPost({user.Id})]");
+                _userRepository.Add(user);
                 _userRepository.SaveChanges();
             }
             catch (DbUpdateException)

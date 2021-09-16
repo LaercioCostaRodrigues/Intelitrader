@@ -25,10 +25,10 @@ go
 
 CREATE TABLE [EventLogging].[Logs](
 Id INT not null constraint [PK_Logs_Id] Primary key clustered,
-Message NVARCHAR(MAX) null,
-MessageTemplate NVARCHAR(MAX) null,
-[Level] NVARCHAR(128) null,
+Message NVARCHAR(200) null,
+MessageTemplate NVARCHAR(200) null,
+[Level] NVARCHAR(20) null,
 TimeStamp datetime null,
 Exception NVARCHAR(MAX) null,
-Properties NVARCHAR(MAX) null
+Properties NVARCHAR(400) null
 )
