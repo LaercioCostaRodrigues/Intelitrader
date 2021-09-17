@@ -74,36 +74,17 @@ namespace UsersControllerTest
         }
 
         [Fact]
-        public void PutUser_NullUser_ReturnNotFound()
-        {
-            // Arrange
-            string id = "b4f5a-b4f5a-b4f5a-b4f5a-b4f5a";
-            var fakeUserBind = A.Fake<UserBind>();
-            var fakeUser = A.Fake<User>();
-            fakeUser.Id = id;
-
-            var fakeRepository = A.Fake<IUserRepository>();
-            var UserController = new UsersController(fakeRepository);
-            A.CallTo(() => fakeRepository.Find(id)).Returns(null);
-
-            // Act
-            var iactionResult = UserController.PutUser(id, fakeUserBind);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(iactionResult);
-        }
-
-        [Fact]
         public void PutUser_WithWrongId_ReturnBadRequest()
         {
             // Arrange
             string id = "NonexistentId";
-            var fakeUserBind = A.Fake<UserBind>();
+            var fakeUser = A.Fake<User>();
+            fakeUser.Id = "b4f5a-b4f5a-b4f5a-b4f5a-b4f5a";
             var fakeRepository = A.Fake<IUserRepository>();
             var UserController = new UsersController(fakeRepository);
 
             // Act
-            var iactionResult = UserController.PutUser(id, fakeUserBind);
+            var iactionResult = UserController.PutUser(id, fakeUser);
 
             // Assert
             Assert.IsType<BadRequestResult>(iactionResult);
@@ -114,18 +95,15 @@ namespace UsersControllerTest
         {
             // Arrange
             string id = "b4f5a-b4f5a-b4f5a-b4f5a-b4f5a";
-            var fakeUserBind = A.Fake<UserBind>();
             var fakeUser = A.Fake<User>();
             fakeUser.Id = id;
-
             var fakeRepository = A.Fake<IUserRepository>();
             var UserController = new UsersController(fakeRepository);
-            A.CallTo(() => fakeRepository.Find(id)).Returns(fakeUser);
             A.CallTo(() => fakeRepository.SaveChanges()).Throws(new DbUpdateConcurrencyException());
             A.CallTo(() => fakeRepository.UserExists(id)).Returns(false);
 
             // Act
-            var iactionResult = UserController.PutUser(id, fakeUserBind);
+            var iactionResult = UserController.PutUser(id, fakeUser);
 
             // Assert
             Assert.IsType<NotFoundResult>(iactionResult);
@@ -136,16 +114,14 @@ namespace UsersControllerTest
         {
             // Arrange
             string id = "b4f5a-b4f5a-b4f5a-b4f5a-b4f5a";
-            var fakeUserBind = A.Fake<UserBind>();
             var fakeUser = A.Fake<User>();
             fakeUser.Id = id;
 
             var fakeRepository = A.Fake<IUserRepository>();
             var UserController = new UsersController(fakeRepository);
-            A.CallTo(() => fakeRepository.Find(id)).Returns(fakeUser);
 
             // Act
-            var iactionResult = UserController.PutUser(id, fakeUserBind);
+            var iactionResult = UserController.PutUser(id, fakeUser);
 
             // Assert
             Assert.IsType<NoContentResult>(iactionResult);
@@ -156,7 +132,7 @@ namespace UsersControllerTest
         {
             // Arrange
             string id = "b4f5a-b4f5a-b4f5a-b4f5a-b4f5a";
-            var fakeUserBind = A.Fake<UserBind>();
+            var fakeUser = A.Fake<User>();
 
             var fakeRepository = A.Fake<IUserRepository>();
             var UserController = new UsersController(fakeRepository);
@@ -165,7 +141,7 @@ namespace UsersControllerTest
             A.CallTo(() => fakeRepository.UserExists(id)).Returns(true);
 
             // Act
-            var actionResult = UserController.PostUser(fakeUserBind);
+            var actionResult = UserController.PostUser(fakeUser);
 
             // Assert
             Assert.IsType<ConflictResult>(actionResult.Result);
@@ -175,13 +151,13 @@ namespace UsersControllerTest
         public void PostUser_RightRequestBody_UserActionResult()
         {
             // Arrange
-            var fakeUserBind = A.Fake<UserBind>();
+            var fakeUser = A.Fake<User>();
 
             var fakeRepository = A.Fake<IUserRepository>();
             var UserController = new UsersController(fakeRepository);
 
             // Act
-            var actionResult = UserController.PostUser(fakeUserBind);
+            var actionResult = UserController.PostUser(fakeUser);
 
             // Assert
             Assert.IsType<ActionResult<User>>(actionResult);
